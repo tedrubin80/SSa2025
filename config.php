@@ -3,10 +3,10 @@
 session_start();
 
 // Database Configuration
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'film_festival_cms');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_HOST', 'self.theorubin.com');
+define('DB_NAME', 'stevecmssite');
+define('DB_USER', 'stevedemotest');
+define('DB_PASS', 'faNvy4-niqqer-kymker');
 
 // Site Configuration
 define('SITE_URL', 'http://localhost/film_festival_cms');
