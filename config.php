@@ -1,14 +1,14 @@
 <?php
 // config.php - Configuration file for Southern Shorts CMS
 
-// Database configuration
+// Database configuration - UPDATE THESE VALUES
 define('DB_HOST', 'collection.theorubin.com');
 define('DB_NAME', 'stevecmssite');
 define('DB_USER', 'stevedemotest');
 define('DB_PASS', 'faNvy4-niqqer-kymker');
 
-// Site configuration
-define('SITE_URL', 'http://localhost/southern_shorts_cms');
+// Site configuration - UPDATE THESE VALUES
+define('SITE_URL', 'https://your-domain.com');      // Your website URL (no trailing slash)
 define('ADMIN_URL', SITE_URL . '/admin');
 define('UPLOADS_DIR', 'uploads/');
 define('UPLOADS_PATH', __DIR__ . '/' . UPLOADS_DIR);
@@ -47,7 +47,7 @@ function getCurrentUser() {
     
     $db = Database::getInstance();
     return $db->fetchOne(
-        "SELECT * FROM users WHERE id = ?",
+        "SELECT * FROM admin_users WHERE id = ?",
         [$_SESSION['user_id']]
     );
 }
@@ -55,7 +55,7 @@ function getCurrentUser() {
 function getSetting($key, $default = '') {
     $db = Database::getInstance();
     $setting = $db->fetchOne(
-        "SELECT setting_value FROM settings WHERE setting_key = ?",
+        "SELECT setting_value FROM site_settings WHERE setting_key = ?",
         [$key]
     );
     return $setting ? $setting['setting_value'] : $default;

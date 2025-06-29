@@ -19,12 +19,13 @@ $latestFestival = $db->fetchOne(
      LIMIT 1"
 );
 
-// Get recent festivals for showcase
+// Get recent festivals for showcase - using the festival_summary view if available
 $recentFestivals = $db->fetchAll(
     "SELECT f.*, 
-     (SELECT COUNT(*) FROM films WHERE festival_id = f.id) as film_count,
-     (SELECT COUNT(*) FROM awards WHERE festival_id = f.id) as award_count
+     COALESCE(fs.film_count, 0) as film_count,
+     COALESCE(fs.award_count, 0) as award_count
      FROM festivals f 
+     LEFT JOIN festival_summary fs ON f.id = fs.id
      WHERE f.status = 'published'
      ORDER BY f.year DESC, 
      CASE f.season 
@@ -46,30 +47,11 @@ $stats = [
 $content = '';
 
 // Hero section with latest festival
-if ($latestFestival && !empty($latestFestival['featured_video_url'])) {
-    $embedUrl = '';
-    
-    // Convert video URL to embed format
-    if (strpos($latestFestival['featured_video_url'], 'vimeo.com') !== false) {
-        if (preg_match('/vimeo\.com\/(\d+)/', $latestFestival['featured_video_url'], $matches)) {
-            $embedUrl = 'https://player.vimeo.com/video/' . $matches[1];
-        }
-    } elseif (strpos($latestFestival['featured_video_url'], 'youtube.com') !== false || strpos($latestFestival['featured_video_url'], 'youtu.be') !== false) {
-        if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/', $latestFestival['featured_video_url'], $matches)) {
-            $embedUrl = 'https://www.youtube.com/embed/' . $matches[1] . '?autoplay=1&mute=1';
-        }
-    } else {
-        $embedUrl = $latestFestival['featured_video_url'];
-    }
-    
-    if ($embedUrl) {
-        $content .= '
-        <div class="video-container mb-4">
-            <iframe src="' . escape($embedUrl) . '" 
-                    frameborder="0" allow="autoplay; fullscreen; encrypted-media" allowfullscreen>
-            </iframe>
-        </div>';
-    }
+if ($latestFestival && !empty($latestFestival['banner_image'])) {
+    $content .= '
+    <div class="text-center mb-4">
+        <img src="' . escape($latestFestival['banner_image']) . '" class="img-fluid rounded" alt="' . escape($latestFestival['title']) . '" style="max-height: 400px;">
+    </div>';
 }
 
 // Main intro section

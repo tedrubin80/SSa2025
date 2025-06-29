@@ -11,14 +11,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($username && $password) {
         $db = Database::getInstance();
         $user = $db->fetchOne(
-            "SELECT * FROM users WHERE username = ?",
+            "SELECT * FROM admin_users WHERE username = ? AND is_active = 1",
             [$username]
         );
         
-        if ($user && password_verify($password, $user['password'])) {
+        if ($user && password_verify($password, $user['password_hash'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
+            $_SESSION['full_name'] = $user['full_name'];
+            
+            // Update last activity
+            $db->query(
+                "UPDATE admin_users SET last_activity = NOW() WHERE id = ?",
+                [$user['id']]
+            );
+            
             redirect(ADMIN_URL . '/dashboard.php');
         } else {
             $error = 'Invalid username or password';

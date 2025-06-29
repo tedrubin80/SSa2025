@@ -198,8 +198,8 @@ function renderAdminLayout($title, $content, $pageClass = '') {
                 
                 <div class="user-info">
                     <i class="fas fa-user-circle fa-2x mb-2"></i>
-                    <div><strong><?= escape($user['username']) ?></strong></div>
-                    <small><?= escape(ucfirst($user['role'])) ?></small>
+                    <div><strong><?= escape($user['full_name'] ?? $user['username']) ?></strong></div>
+                    <small><?= escape(ucfirst(str_replace('_', ' ', $user['role']))) ?></small>
                 </div>
                 
                 <ul class="nav flex-column">

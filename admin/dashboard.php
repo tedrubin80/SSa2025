@@ -13,7 +13,7 @@ $stats = [
     'published_festivals' => $db->fetchOne("SELECT COUNT(*) as count FROM festivals WHERE status = 'published'")['count'],
     'films' => $db->fetchOne("SELECT COUNT(*) as count FROM films")['count'],
     'awards' => $db->fetchOne("SELECT COUNT(*) as count FROM awards")['count'],
-    'categories' => $db->fetchOne("SELECT COUNT(*) as count FROM categories WHERE active = 1")['count'],
+    'categories' => $db->fetchOne("SELECT COUNT(*) as count FROM categories WHERE is_active = 1")['count'],
     'pages' => $db->fetchOne("SELECT COUNT(*) as count FROM pages WHERE status = 'published'")['count']
 ];
 
@@ -31,7 +31,7 @@ $recentFestivals = $db->fetchAll(
      LIMIT 5"
 );
 
-// Get recent awards
+// Get recent awards using the award_summary view
 $recentAwards = $db->fetchAll(
     "SELECT a.*, f.title as festival_title, f.season, f.year, at.name as award_name
      FROM awards a
@@ -189,22 +189,17 @@ $content .= '
                         <tbody>';
 
 foreach ($recentAwards as $award) {
-    $placementBadge = match($award['placement']) {
-        'Best of Show' => '<span class="badge bg-danger">Best of Show</span>',
-        'Winner' => '<span class="badge bg-success">Winner</span>',
-        'Excellence' => '<span class="badge bg-info">Excellence</span>',
-        'Merit' => '<span class="badge bg-warning">Merit</span>',
-        'Distinction' => '<span class="badge bg-primary">Distinction</span>',
-        default => '<span class="badge bg-secondary">' . escape($award['placement']) . '</span>'
-    };
+    $recipientBadge = $award['recipient_type'] === 'film' 
+        ? '<span class="badge bg-primary">Film</span>'
+        : '<span class="badge bg-info">Person</span>';
     
     $content .= '
                             <tr>
                                 <td>
                                     <strong>' . escape($award['award_name']) . '</strong><br>
-                                    ' . $placementBadge . '
+                                    ' . $recipientBadge . '
                                 </td>
-                                <td>' . escape($award['recipient_name']) . '</td>
+                                <td>' . escape($award['recipient_name'] ?? 'N/A') . '</td>
                                 <td>
                                     <small>' . escape($award['season'] . ' ' . $award['year']) . '</small>
                                 </td>

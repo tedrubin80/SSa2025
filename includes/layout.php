@@ -4,13 +4,13 @@ require_once __DIR__ . '/../config.php';
 
 function renderLayout($title, $content, $pageClass = '') {
     $siteTitle = getSetting('site_title', 'Southern Shorts Awards');
-    $tagline = getSetting('site_tagline', 'In Recognition of Quality Filmcraft');
+    $siteDescription = getSetting('site_description', 'In Recognition of Quality Filmcraft');
     $filmFreewayUrl = getSetting('filmfreeway_url', '#');
     
     // Get navigation pages
     $db = Database::getInstance();
     $pages = $db->fetchAll(
-        "SELECT slug, title FROM pages WHERE status = 'published' ORDER BY sort_order"
+        "SELECT slug, title FROM pages WHERE status = 'published' AND show_in_menu = 1 ORDER BY sort_order"
     );
 ?>
 <!DOCTYPE html>
@@ -266,7 +266,7 @@ function renderLayout($title, $content, $pageClass = '') {
             <img src="<?= SITE_URL ?>/assets/images/SSA-Logosm.png" alt="<?= escape($siteTitle) ?>" style="max-width: 802px; height: auto;">
         </div>
         <div class="tagline">
-            <?= escape($tagline) ?>
+            <?= escape($siteDescription) ?>
         </div>
     </header>
 
@@ -352,7 +352,7 @@ function renderLayout($title, $content, $pageClass = '') {
                     <h5>Contact Information</h5>
                     <p>
                         Email: <a href="mailto:<?= escape(getSetting('contact_email')) ?>"><?= escape(getSetting('contact_email')) ?></a><br>
-                        Phone: <?= escape(getSetting('contact_phone')) ?>
+                        Phone: <?= escape(getSetting('contact_phone', '(678) 310-7192')) ?>
                     </p>
                 </div>
                 <div class="col-md-6">
