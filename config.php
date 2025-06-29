@@ -2,7 +2,7 @@
 // config.php - Configuration file for Southern Shorts CMS
 
 // Database configuration
-define('DB_HOST', 'self.theorubin.com');
+define('DB_HOST', 'collection.theorubin.com');
 define('DB_NAME', 'stevecmssite');
 define('DB_USER', 'stevedemotest');
 define('DB_PASS', 'faNvy4-niqqer-kymker');
